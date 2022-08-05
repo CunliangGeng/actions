@@ -25,4 +25,4 @@ jobs:
     - name: install 
       run: |
         echo "execute install script"
-        chmod install-nplinker-deps
+        sudo install-nplinker-deps
