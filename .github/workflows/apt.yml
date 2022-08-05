@@ -15,9 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
     - name: apt update
       run: |
         [[ -e $GITHUB_ACTIONS ]] && sudo apt update
@@ -27,5 +24,5 @@ jobs:
         env
         echo $?
         cat /etc/os-release
-        cp ./install-nplinker-deps /usr/bin
+        cp ./install-nplinker-deps /usr/loca/bin
         sudo install-nplinker-deps
