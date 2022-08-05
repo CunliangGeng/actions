@@ -17,9 +17,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: apt update
       run: |
+        echo "Start running"
         [[ -e install-nplinker-deps ]] && echo "install script exist" || echo "Error: script not exist"
         echo "copy install script"
         cp ./install-nplinker-deps /usr/local/bin
         echo "execute install script"
         chmod +x ./install-nplinker-deps
-        sudo ./install-nplinker-deps
