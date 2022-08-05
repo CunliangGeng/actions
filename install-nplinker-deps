@@ -10,24 +10,8 @@ set -e
 # Creat installation path
 #------------------------------------------------------------------------------
 
-# Get python install prefix
-if command -v python &> /dev/null; then
-    PY_PATH=$(python  -c "import sys; print(sys.prefix)")
-elif command -v python3 &> /dev/null; then
-    PY_PATH=$(python3 -c "import sys; print(sys.prefix)")
-else
-    echo "❌ Error: python NOT FOUND"
-    exit
-fi
-
-# check the path of this script
-if [[ $(command -v install-nplinker-deps) != $PY_PATH/bin/install-nplinker-deps ]]; then
-    echo "❌ Error: command `install-nplinker-deps` invoked from bad path;"
-    echo "Please install nplinker with `pip install nplinker` and then re-run this command."
-    exit
-fi
-
 # create dependecy install path
+PY_PATH="/usr/local"
 cd $PY_PATH
 [[ -d nplinker_lib ]] || mkdir nplinker_lib
 LIB_PATH=$PY_PATH/nplinker_lib
@@ -45,7 +29,6 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     if command -v apt &> /dev/null; then
         echo -e "✅ Package manager is 'apt'\n"
         if [[ -e $GITHUB_ACTIONS ]]; then
-            sudo apt update &> /dev/null
             do_install="sudo apt install -y"
         else
             apt update &> /dev/null
