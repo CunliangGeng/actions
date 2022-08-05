@@ -50,6 +50,7 @@ if [[ "$OSTYPE" == "linux"* ]]; then
             do_install="apt install -y"
             apt update &> /dev/null
         fi
+        echo -e "command is: $do_install\n" 
     elif command -v dnf &> /dev/null; then
         echo -e "✅ Package manager is 'dnf'\n"
         do_install="dnf install -y"
