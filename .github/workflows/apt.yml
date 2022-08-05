@@ -1,0 +1,32 @@
+name: apt
+
+on:
+  workflow_dispatch:
+    inputs:
+      current_version:
+        description: 'Current version'
+        default: '0.0.1'
+        type: string
+        required: true
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: apt update
+      run: |
+        [[ -e $GITHUB_ACTIONS ]] && sudo apt update
+        echo $?
+        sudo apt install gcc
+        echo $?
+        env
+        echo $?
+        cat /etc/os-release
+    - name: test install nplinker dep
+      run: |
+      sudo install-nplinker-deps
