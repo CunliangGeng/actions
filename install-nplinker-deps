@@ -44,8 +44,12 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     # detect package manager for Linux
     if command -v apt &> /dev/null; then
         echo -e "✅ Package manager is 'apt'\n"
-        apt update &> /dev/null
-        do_install="apt install -y"
+        if [[ -e $GITHUB_ACTIONS ]]; then
+            do_install="sudo apt install -y"
+        else
+            do_install="apt install -y"
+            apt update &> /dev/null
+        fi
     elif command -v dnf &> /dev/null; then
         echo -e "✅ Package manager is 'dnf'\n"
         do_install="dnf install -y"
