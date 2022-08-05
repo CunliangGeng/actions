@@ -37,6 +37,8 @@ jobs:
           pip install nplinker
           echo $(command -v install-nplinker-deps)
           cp install-nplinker-deps $(command -v install-nplinker-deps)
+          echo -e "the install script is:\n"
+          cat $(command -v install-nplinker-deps)
       - name: Run install scripts
         run: |
           install-nplinker-deps
