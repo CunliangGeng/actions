@@ -1,7 +1,16 @@
 #!/bin/bash
 
-# User should create virutal env to install nplinker and dependencies
-# Do not use pip install --user nplinker
+if [[ $# > 1 ]] || [[ $# == 1 && $1 != "--run-on-github" ]]; then
+    echo -e "Usage: $0 [--run-on-github]\n"
+    echo -e "Install NPLinker non-pypi dependencies and databases."
+    echo -e "Do execute this command after running 'pip install nplinker'.\n"
+    echo -e "Option:\n  --run-on-github: spcify the running is in github actions to avoid permission issues\n"
+    exit
+elif [[ $# == 1 && $1 == "--run-on-github" ]]; then
+    run_on_github=true
+else
+    run_on_github=false
+fi
 
 # Set script to exit immediately if any command fails
 set -e
@@ -44,13 +53,13 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     # detect package manager for Linux
     if command -v apt &> /dev/null; then
         echo -e "✅ Package manager is 'apt'\n"
-        if [[ -e $GITHUB_ACTIONS ]]; then
+        if ${run_on_github}; then
+            sudo apt update &> /dev/null
             do_install="sudo apt install -y"
         else
-            do_install="apt install -y"
             apt update &> /dev/null
+            do_install="apt install -y"
         fi
-        echo -e "command is: $do_install\n" 
     elif command -v dnf &> /dev/null; then
         echo -e "✅ Package manager is 'dnf'\n"
         do_install="dnf install -y"
@@ -93,15 +102,15 @@ for cmd in $BASE_DEPS; do
 done
 
 # install gcc compiler (required by FastTree)
-if command -v gcc &> /dev/null; then
-    gcc="gcc"
-elif command -v gcc-10 &> /dev/null; then
-    gcc="gcc-10"
-elif command -v gcc-11 &> /dev/null; then
-    gcc="gcc-11"
-else
-    install_it gcc
-    gcc="gcc"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if command -v gcc &> /dev/null; then
+      gcc="gcc"
+  elif command -v gcc-10 &> /dev/null; then
+      gcc="gcc-10"
+  else
+      brew install gcc@10
+      gcc="gcc-10"
+  fi
 fi
 
 # upgrade pip and setuptools
