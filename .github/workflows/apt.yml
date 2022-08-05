@@ -21,5 +21,8 @@ jobs:
         [[ -e install-nplinker-deps ]] && echo "install script exist" || echo "Error: script not exist"
         echo "copy install script"
         cp ./install-nplinker-deps /usr/local/bin
+        [[ command -v install-nplinker-deps &> /dev/null ]]  && echo "cmd exist"  || ehco "Error: cmd NOT exist"
+    - name: install 
+      run: |
         echo "execute install script"
-        chmod +x ./install-nplinker-deps
+        chmod install-nplinker-deps
