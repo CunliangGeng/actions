@@ -10,19 +10,34 @@ on:
         required: true
 
 
+
 jobs:
-  release:
+
+  smoke_test:
+    name: Smoke test on ubuntu for python 3.10
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
     steps:
-    - uses: actions/checkout@v2
-    - name: check script
-      run: |
-        echo "Start running"
-        [[ -e install-nplinker-deps ]] && echo "install script exist" || echo "Error: script not exist"
-        echo "copy install script"
-        cp ./install-nplinker-deps /usr/local/bin
-        if command -v install-nplinker-deps &> /dev/null; then echo "cmd exist" ; else echo "Error: cmd NOT exist" ; fi
-    - name: install 
-      run: |
-        echo "execute install script"
-        install-nplinker-deps
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Python info
+        shell: bash -l {0}
+        run: |
+          which python3
+          python3 --version
+      - name: Upgrade pip and install dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+      - name: Install nplinker
+        run: |
+          pip install nplinker
+          echo $(command -v install-nplinker-deps)
+          cp install-nplinker-deps $(command -v install-nplinker-deps)
+      - name: Run install scripts
+        run: |
+          install-nplinker-deps
+
