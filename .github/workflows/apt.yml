@@ -1,18 +1,9 @@
-name: apt
-
 on:
-  workflow_dispatch:
-    inputs:
-      current_version:
-        description: 'Current version'
-        default: '0.0.1'
-        type: string
-        required: true
-
-
+  push:
+    branches:
+      - main
 
 jobs:
-
   smoke_test:
     name: Smoke test on ubuntu for python 3.10
     runs-on: ubuntu-latest
@@ -32,14 +23,14 @@ jobs:
       - name: Upgrade pip and install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools
+          pip install build pytest wheel
+      - name: Build the package
+        run: 	python -m build
       - name: Install nplinker
         run: |
-          pip install nplinker
-          echo $(command -v install-nplinker-deps)
-          cp install-nplinker-deps $(command -v install-nplinker-deps)
-          echo -e "the install script is:\n"
-          cat $(command -v install-nplinker-deps)
-      - name: Run install scripts
+          pip install $(ls dist/nplinker*.whl)
+      - name: Install deps
         run: |
-          install-nplinker-deps
-
+          install-nplinker-deps --run-on-github
+      - name: Run unit tests
+        run: pytest -v
