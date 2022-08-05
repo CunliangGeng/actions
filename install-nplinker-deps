@@ -44,8 +44,13 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     # detect package manager for Linux
     if command -v apt &> /dev/null; then
         echo -e "✅ Package manager is 'apt'\n"
-        apt update &> /dev/null
-        do_install="apt install -y"
+        if [[ -e $GITHUB_ACTIONS ]]; then
+            sudo apt update &> /dev/null
+            do_install="sudo apt install -y"
+        else
+            apt update &> /dev/null
+            do_install="apt install -y"
+        fi
     elif command -v dnf &> /dev/null; then
         echo -e "✅ Package manager is 'dnf'\n"
         do_install="dnf install -y"
@@ -87,16 +92,17 @@ for cmd in $BASE_DEPS; do
     fi
 done
 
+
 # install gcc compiler (required by FastTree)
-if command -v gcc &> /dev/null; then
-    gcc="gcc"
-elif command -v gcc-10 &> /dev/null; then
-    gcc="gcc-10"
-elif command -v gcc-11 &> /dev/null; then
-    gcc="gcc-11"
-else
-    install_it gcc
-    gcc="gcc"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if command -v gcc &> /dev/null; then
+      gcc="gcc"
+  elif command -v gcc-10 &> /dev/null; then
+      gcc="gcc-10"
+  else
+      brew install gcc@10
+      gcc="gcc-10"
+  fi
 fi
 
 # upgrade pip and setuptools
@@ -106,23 +112,7 @@ pip install -q -U pip setuptools
 # Install NPLinker dependencies
 #------------------------------------------------------------------------------
 
-#--- Install BigScape
-## Note: DO NOT pip install bigscape until its modular version
-echo "🔥 Start installing BigScape ..."
-    [[ -d BiG-SCAPE ]] || git clone https://github.com/medema-group/BiG-SCAPE.git
-    cd BiG-SCAPE
-    git config --add advice.detachedHead false  # disable advice
-    git config pull.ff only
-    git checkout master
-    git pull
-    git checkout a3ea8c5a4ef0abdb3b6b043a0f2657d3d778ca20  # tag v1.1.4
-    pip install -q -U -r requirements.txt
-    chmod 754 bigscape.py
-    chmod 664 domains_color_file.tsv
-    chmod 775 Annotated_MIBiG_reference
-    ln -sf $LIB_PATH/BiG-SCAPE/bigscape.py $PY_PATH/bin
-    cd ..
-echo -e "✅ BigScape installed successfully\n"
+
 
 #--- Install FastTree (not support Windows, required by BigScape)
 # http://www.microbesonline.org/fasttree/
@@ -141,28 +131,6 @@ echo -e "✅ FastTree installed successfully\n"
 if ! command -v hmmpress &> /dev/null; then
     install_it hmmer
 fi
-
-
-#--- Install canopus_treemap
-echo "🔥 Start installing Canopus"
-    pip install -U -q canopus@git+https://github.com/kaibioinfo/canopus_treemap.git
-echo -e "✅ Canopus installed successfully\n"
-
-
-#--- Install SIRIUS
-echo "🔥 Start installing Sirius"
-    if [[ "$OSTYPE" == "linux"* ]]; then
-        wget -q --show-progress https://github.com/boecker-lab/sirius/releases/download/v5.5.5/sirius-5.5.5-linux64-headless.zip
-        unzip -q -o sirius-5.5.5-linux64-headless.zip
-        ln -sf $LIB_PATH/sirius/bin/sirius $PY_PATH/bin
-        rm sirius-5.5.5-linux64-headless.zip
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        wget -q --show-progress https://github.com/boecker-lab/sirius/releases/download/v5.5.5/sirius-5.5.5-osx64-headless.zip
-        unzip -q -o sirius-5.5.5-osx64-headless.zip
-        ln -sf $LIB_PATH/sirius.app/Contents/MacOS/sirius $PY_PATH/bin
-        rm sirius-5.5.5-osx64-headless.zip
-    fi
-echo -e "✅ Sirius installed successfully\n"
 
 
 echo -e "✅ 🎉 Successfully installed all NPLinker dependencies and databases!\n"
