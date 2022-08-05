@@ -54,7 +54,6 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     if command -v apt &> /dev/null; then
         echo -e "✅ Package manager is 'apt'\n"
         if ${run_on_github}; then
-            sudo apt update &> /dev/null
             do_install="sudo apt install -y"
         else
             apt update &> /dev/null
