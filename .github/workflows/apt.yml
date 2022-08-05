@@ -17,12 +17,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: apt update
       run: |
-        [[ -e $GITHUB_ACTIONS ]] && sudo apt update
-        echo $?
-        sudo apt install gcc
-        echo $?
-        env
-        echo $?
-        cat /etc/os-release
+        [[ -e install-nplinker-deps ]] && echo "install script exist" || echo "Error: script not exist"
+        echo "copy install script"
         cp ./install-nplinker-deps /usr/local/bin
-        sudo install-nplinker-deps
+        echo "execute install script"
+        chmod +x ./install-nplinker-deps
+        sudo ./install-nplinker-deps
