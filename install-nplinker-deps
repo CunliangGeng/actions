@@ -142,13 +142,6 @@ if ! command -v hmmpress &> /dev/null; then
     install_it hmmer
 fi
 
-#--- Prepare Pfam database (required by BigScape)
-echo "🔥 Start installing Pfam database ..."
-    [[ -e Pfam-A.hmm.gz ]] || wget -q --show-progress ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam34.0/Pfam-A.hmm.gz
-    gunzip -f Pfam-A.hmm.gz
-    hmmpress -f Pfam-A.hmm
-echo -e "✅ Pfam database installed successfully\n"
-
 
 #--- Install canopus_treemap
 echo "🔥 Start installing Canopus"
