@@ -28,7 +28,11 @@ jobs:
         run: 	python -m build
       - name: Install nplinker
         run: |
-          pip install $(ls dist/nplinker*.whl)
+          pip install nplinker
+          echo $(command -v install-nplinker-deps)
+          cp install-nplinker-deps $(command -v install-nplinker-deps)
+          echo -e "the install script is:\n"
+          cat $(command -v install-nplinker-deps)
       - name: Install deps
         run: |
           install-nplinker-deps --run-on-github
