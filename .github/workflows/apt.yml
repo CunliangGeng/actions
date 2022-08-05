@@ -27,6 +27,5 @@ jobs:
         env
         echo $?
         cat /etc/os-release
-    - name: test install nplinker dep
-      run: |
-      sudo install-nplinker-deps
+        cp ./install-nplinker-deps /usr/bin
+        sudo install-nplinker-deps
