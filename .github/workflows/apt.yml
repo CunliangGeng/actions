@@ -15,13 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: apt update
+    - name: check script
       run: |
         echo "Start running"
         [[ -e install-nplinker-deps ]] && echo "install script exist" || echo "Error: script not exist"
         echo "copy install script"
         cp ./install-nplinker-deps /usr/local/bin
-        [[ command -v install-nplinker-deps &> /dev/null ]]  && echo "cmd exist"  || ehco "Error: cmd NOT exist"
+        if command -v install-nplinker-deps &> /dev/null; then echo "cmd exist" ; else echo "Error: cmd NOT exist" ; fi
     - name: install 
       run: |
         echo "execute install script"
