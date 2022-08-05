@@ -24,8 +24,6 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip setuptools
           pip install build pytest wheel
-      - name: Build the package
-        run: 	python -m build
       - name: Install nplinker
         run: |
           pip install nplinker
