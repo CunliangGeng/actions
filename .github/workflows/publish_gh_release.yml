@@ -2,7 +2,7 @@ name: Draft or publish Github release
 
 on:
   workflow_dispatch:
-    inputs:
+#     inputs:
 #       current_version:
 #         description: 'Current version'
 #         default: '0.0.1'
