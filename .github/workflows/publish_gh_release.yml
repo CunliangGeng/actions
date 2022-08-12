@@ -32,4 +32,4 @@ jobs:
       run: |
         gh release create v${{ inputs.new_version }} --draft --title v${{ inputs.new_version }} --generate-notes
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
