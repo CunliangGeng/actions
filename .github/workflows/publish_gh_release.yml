@@ -22,45 +22,14 @@ on:
           - draft
           - publish
 
-env:
-  REPO_NAME: pdb2sql
-  VERSION_FILE: pdb2sql/__version__.py
-  CHANGELOG_FILE: CHANGELOG.md
-  RELEASE_NOTES_FILE: release_notes.md
-
 jobs:
   release:
     runs-on: ubuntu-latest
-#     if: ${{ inputs.current_version != inputs.new_version }}
     steps:
     - uses: actions/checkout@master
-#     - name: Update package version and change log
-#       run: |
-#         echo "__version__ = '${{ inputs.new_version }}'" > $VERSION_FILE
-#         docker run --rm -v "$(pwd)":/usr/local/src/your-app \
-#           githubchangeloggenerator/github-changelog-generator \
-#           -u ${{ github.repository_owner }} \
-#           -p $REPO_NAME \
-#           --future-release=v${{ inputs.new_version }} \
-#           -o $CHANGELOG_FILE \
-#           -t ${{ secrets.GITHUB_TOKEN }}
-#     - name: Commit and push the changes
-#       uses: stefanzweifel/git-auto-commit-action@v4
-#       with:
-#         commit_message: Update version to ${{ inputs.new_version }}
-#     - name: Generate release notes
-#       run: |
-#         awk '/^## \[v${{ inputs.new_version }}/{flag=1; next}/^##/{flag=0}flag' $CHANGELOG_FILE > $RELEASE_NOTES_FILE
     - name: Draft a Github release
       if: ${{ inputs.mode == 'draft' }}
       run: |
-#       gh release create v${{ inputs.new_version }} --draft --title v${{ inputs.new_version }} -F $RELEASE_NOTES_FILE
         gh release create v${{ inputs.new_version }} --draft --title v${{ inputs.new_version }} --generate-notes
       env:
         GITHUB_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
-#     - name: Publish a Github release
-#       if: ${{ inputs.mode == 'publish' }}
-#       run: |
-#         gh release create v${{ inputs.new_version }} --title v${{ inputs.new_version }} -F $RELEASE_NOTES_FILE
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
